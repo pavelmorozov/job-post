@@ -1,0 +1,1 @@
+This project create for auto post jobs on taleo based web-sites. Selenium webdriver used.

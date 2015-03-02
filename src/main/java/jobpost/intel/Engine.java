@@ -230,7 +230,7 @@ public class Engine {
 						for (WebElement input : selectWE) {
 							WebElement labelWE = input.findElement(By
 									.xpath(".."));
-							System.out.println("Answers " + labelWE.getText());
+							//System.out.println("Answers " + labelWE.getText());
 							if (q.getAnswers().contains(labelWE.getText())) {
 								input.click();
 							}
@@ -308,13 +308,13 @@ public class Engine {
 
 		search();
 
-		Question.saveExampleXML(QUESTIONS_XML);
+		//Question.saveExampleXML(QUESTIONS_XML);
 		questions = Question.readQuestionsXML(QUESTIONS_XML);
 
-		VacancyInstance vacancy = new VacancyInstance();
-		vacancy.setApplyButtonUrl("https://intel.taleo.net/careersection/application.jss?type=1&lang=en&portal=660190084&reqNo=874196");
-		applyVacancy(vacancy);
+//		VacancyInstance vacancy = new VacancyInstance();
+//		vacancy.setApplyButtonUrl("https://intel.taleo.net/careersection/application.jss?type=1&lang=en&portal=660190084&reqNo=874196");
+//		applyVacancy(vacancy);
 		
-//		processJobsPage();
+		processJobsPage();
 	}
 }
