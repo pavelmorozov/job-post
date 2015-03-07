@@ -18,6 +18,12 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+/**
+ * Engine class used to operate with browser.
+ * To start run postJobs() method
+ * @author P
+ *
+ */
 public class Engine {
 	/**
 	 * In test mode application will not finish, the last "submit will not be
@@ -308,7 +314,10 @@ public class Engine {
 
 		search();
 
+		//To create xml config file uncomment this line
 		//Question.saveExampleXML(QUESTIONS_XML);
+		
+		//Load questions hash map from xml config
 		questions = Question.readQuestionsXML(QUESTIONS_XML);
 
 //		VacancyInstance vacancy = new VacancyInstance();

@@ -1,0 +1,15 @@
+ .root {
+	-fx-background-color: #C2CFD3;
+}
+
+#head-text{
+   -fx-font-size: 32px;
+   -fx-font-family: "Arial Black";
+   -fx-fill: rgba(50,150,250,1);
+   -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 6, 0.0 , 0 , 2 );
+   -fx-padding: 100;
+}
+
+#task-list{
+	-fx-fill: rgba(00,100,150,1);
+}

@@ -12,10 +12,11 @@ public class Jobpost extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("MainForm.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("ui/MainForm.fxml"));
         
         Scene scene = new Scene(root);
         
+        stage.setTitle("Job post");
         stage.setScene(scene);
         stage.show();
     }	
@@ -26,8 +27,8 @@ public class Jobpost extends Application{
 		
 		
 		// Starts application engine
-		Engine appEngine = new Engine(); 
-		appEngine.postJobs();
+	//	Engine appEngine = new Engine(); 
+	//	appEngine.postJobs();
 	}
 
 }

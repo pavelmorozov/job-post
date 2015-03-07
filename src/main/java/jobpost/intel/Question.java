@@ -39,33 +39,45 @@ public class Question{
 			}
 		}
 		
-		//		Iterator<Map.Entry<String, Question>> iterator = readQuestions
-		//		.entrySet().iterator();
-		//while (iterator.hasNext()) {
-		//	Map.Entry<String, Question> entry = iterator.next();
-		//	System.out.println(entry.getKey());
-		//	System.out.println(entry.getValue().toString());
-		//}
-		
-		
 		return readQuestions;
 	}
 	
 	/**
-	 * Creates example XML file
+	 * Creates example XML file. To create new question, 
+	 * add block of code, like
+	 * 
+	 *	Question q = new Question();
+	 *	q.setQuestionText("Can you, on your first day of employment, submit verification of eligibility of the legal right to work in the country or countries in which you are interested?");
+	 *	q.setQuestionType("select");
+	 *	Set<String> a = new HashSet<String>();
+	 *	a.add("Yes");// 1-yes
+	 *	q.setAnswers(a);
+	 *
+	 * This method created as illustration. You can configure
+	 * questions and answers in XML file. 
+	 *  
 	 * @param fileName
-	 * @return
+	 * @return void
 	 */
 	public static void saveExampleXML(String fileName){
 		questions = new HashMap<String, Question>();
 
+		//Creates new question object
 		Question q = new Question();
+		//Here added question text. It will Identify question object 
+		//question on webpage
 		q.setQuestionText("Can you, on your first day of employment, submit verification of eligibility of the legal right to work in the country or countries in which you are interested?");
+		//question type (select, selectmultiple, radio, checkbox)
 		q.setQuestionType("select");
+		//Answers are put to HashSet<String>() object. Multiple 
+		//answers allowed for checkbox and selectmultiple ;
 		Set<String> a = new HashSet<String>();
-		a.add("Yes");// 1-yes
+		//Add answer to answers set.
+		a.add("Yes");
+		//set question with answers set
 		q.setAnswers(a);
-
+		//put question object with answers to questions HashMAp.
+		//This will be stored in xml config file.
 		questions.put(q.getQuestionText(), q);
 
 		q = new Question();
@@ -96,7 +108,6 @@ public class Question{
 		q.setQuestionText("Please select those skills you have working experience with. Multiple selections allowed.");
 		q.setQuestionType("checkbox");
 		a = new HashSet<String>();
-//		a.add("Hands-on experience in software architecture and design, object-oriented programming, design patterns and their implementation");
 		a.add("Strong coding skills in multiple systems languages such as Java, C, C++, etc.");
 		a.add("System software experience with various hardware platforms, mobile devices, wearables, Intel Architecture based and SoC platforms");
 		q.setAnswers(a);
@@ -119,7 +130,7 @@ public class Question{
 		a.add("Master's degree");
 		q.setAnswers(a);
 		questions.put(q.getQuestionText(), q);				
-				
+		
 		// Write XML
 		XMLEncoder encoder = null;
 		try {
