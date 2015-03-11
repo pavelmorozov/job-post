@@ -11,6 +11,7 @@ class VacancyInstance {
 	private String jobLocation;
 	private String jobDatePosted;
 	private String applyButtonUrl;
+	private String applyButtonText;
 	
 	public int hashCode() {
 		return Integer.parseInt(getJobId());
@@ -34,6 +35,14 @@ class VacancyInstance {
 	}
 	
 	public VacancyInstance(){
+	}
+
+	public void setApplyButtonText(String applyButtonText){
+		this.applyButtonText = applyButtonText;
+	}
+	
+	public String getApplyButtonText(){
+		return applyButtonText;
 	}
 	
 	public void setJobIdByUrl(String url){

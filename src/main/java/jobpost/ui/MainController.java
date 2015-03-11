@@ -2,6 +2,8 @@ package jobpost.ui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.collections.ObservableList;
@@ -19,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jobpost.Jobpost;
+import jobpost.JobsQueue;
 
 import org.controlsfx.dialog.Dialogs;
 
@@ -33,6 +36,7 @@ public class MainController implements Initializable{
 	 @FXML private TextField password;
 	 @FXML private TextField keyword;
 	 @FXML private TextField questionsXML;
+	 JobsQueue jobsQueue;
 	 
     //@FXML
     //private Label label;
@@ -119,11 +123,27 @@ public class MainController implements Initializable{
 				.showWarning();    	
     }
     
+    public void runJobsQueue(){
+    	jobsQueue = new JobsQueue();
+    	
+    	List<Task> taskQueue = new LinkedList(tableViewTasks.getItems());
+    	
+    	jobsQueue.setTasksList(taskQueue);
+    	Thread jobsQueueThread = new Thread(jobsQueue);
+    	jobsQueueThread.start();
+    } 
+    
     @FXML
     private void handleRunActive(ActionEvent event) {
-        System.out.println("Run!");
+    	System.out.println("Run!");
+    	runJobsQueue();
     }    
-    
+        
+    @FXML
+    private void handleStop(ActionEvent event) {
+    	System.out.println("Stop!");
+    	jobsQueue.setStopThread(true);
+    }       
     @FXML
     private void handleAddTask(ActionEvent event) {
         System.out.println("Add!");

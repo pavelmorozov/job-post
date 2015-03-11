@@ -65,10 +65,15 @@
 	    		GridPane.rowIndex="1" GridPane.columnIndex="4"
 				layoutX="126" layoutY="90" 
 				text="Run active" onAction="#handleRunActive" fx:id="button" />
+
+	    <Button 
+	    		GridPane.rowIndex="1" GridPane.columnIndex="5"
+				layoutX="126" layoutY="90" 
+				text="Stop" onAction="#handleStop" fx:id="button" />
 						
 	    <TableView fx:id="tableViewTasks" 
 	    		GridPane.columnIndex="0" GridPane.rowIndex="2"
-	    		GridPane.columnSpan="5"
+	    		GridPane.columnSpan="6"
 				GridPane.hgrow="ALWAYS"
 				GridPane.vgrow="ALWAYS"
 	    		>
