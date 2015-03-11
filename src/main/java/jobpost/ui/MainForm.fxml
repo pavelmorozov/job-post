@@ -24,14 +24,6 @@
 		styleClass="root"
 		maxHeight="Infinity" maxWidth="Infinity"
 		hgap="10" vgap="10">
-		
-	<!--
-	<columnConstraints>
-		<ColumnConstraints percentWidth="20"/>
-		<ColumnConstraints percentWidth="20" />
-		<ColumnConstraints percentWidth="60" />
-	</columnConstraints>
-	-->      		
 
 	<padding>
 		<Insets top="20" right="20" bottom="20" left="20"/>
@@ -39,129 +31,113 @@
 
 	<!--
 	<gridLinesVisible>true</gridLinesVisible> 
-	-->	
+	-->		
 	
 	<children>
 	
-	<Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" fx:id="X1" />
+		<Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" fx:id="X1" />
+		
+		<Text id="head-text"
+				text="Job post" 
+				GridPane.rowIndex="0" GridPane.columnIndex="0"
+				GridPane.columnSpan="2"/>	
+		
+		<Text id="task-list"
+				text="Tasks list" 
+				GridPane.rowIndex="1" GridPane.columnIndex="0"
+				layoutX="126" layoutY="90"/>
+				
+	    <Button 
+	    		GridPane.rowIndex="1" GridPane.columnIndex="1"
+				layoutX="126" layoutY="90" 
+				text="Edit task" onAction="#handleEditTask" fx:id="button" />				
 	
-	<Text id="head-text"
-			text="Job post" 
-			GridPane.rowIndex="0" GridPane.columnIndex="0"
-			GridPane.columnSpan="2"/>	
+		<Button 
+				GridPane.rowIndex="1" GridPane.columnIndex="2"
+				layoutX="126" layoutY="90" 
+				text="Add task" onAction="#handleAddTask" fx:id="button" />
 	
-	<Text id="task-list"
-			text="Tasks list" 
-			GridPane.rowIndex="1" GridPane.columnIndex="0"
-			layoutX="126" layoutY="90"/>
-
-	<Button 
-			GridPane.rowIndex="1" GridPane.columnIndex="1"
-			layoutX="126" layoutY="90" 
-			text="Add task" onAction="#handleAddTask" fx:id="button" />
-
-    <Button 
-    		GridPane.rowIndex="1" GridPane.columnIndex="2"
-			layoutX="126" layoutY="90" 
-			text="Delete task" onAction="#handleDeleteTask" fx:id="button" />
+	    <Button 
+	    		GridPane.rowIndex="1" GridPane.columnIndex="3"
+				layoutX="126" layoutY="90" 
+				text="Delete task" onAction="#handleDeleteTask" fx:id="button" />
+	    <Button 
+	    		GridPane.rowIndex="1" GridPane.columnIndex="4"
+				layoutX="126" layoutY="90" 
+				text="Run active" onAction="#handleRunActive" fx:id="button" />
 						
+	    <TableView fx:id="tableViewTasks" 
+	    		GridPane.columnIndex="0" GridPane.rowIndex="2"
+	    		GridPane.columnSpan="5"
+				GridPane.hgrow="ALWAYS"
+				GridPane.vgrow="ALWAYS"
+	    		>
+			<columns>
 	
-
-    <!--
-    <children>
-        <Button 
-        		GridPane.rowIndex="1" GridPane.columnIndex="1"
-				GridPane.columnSpan="1" layoutX="126" layoutY="90" 
-				text="Add task" onAction="#handleButtonAction" fx:id="button" />
-        <Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" fx:id="label" />
-        <Button 
-        		GridPane.rowIndex="1" GridPane.columnIndex="2"
-				GridPane.columnSpan="2" layoutX="126" layoutY="90" 
-				text="Delete task" onAction="#handleButtonAction" fx:id="button" />
-        <Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" fx:id="label" />        
-    </children>
-    -->			
-			
+			      <TableColumn text="Active" prefWidth="100">
+			      		<cellValueFactory>
+							<PropertyValueFactory property="active" />
+						</cellValueFactory>
+		               <cellFactory>
+		                    <CheckBoxCellFactory/>
+		                </cellFactory>	               
+			      </TableColumn>
+			      
+			      <TableColumn text="Test mode" prefWidth="100">
+			      		<cellValueFactory>
+							<PropertyValueFactory property="testMode" />
+						</cellValueFactory>
+		               <cellFactory>
+		                    <CheckBoxCellFactory/>
+		                </cellFactory>	               
+			      </TableColumn>
+			      
+			      <TableColumn text="Start URI" prefWidth="200">
+						<cellValueFactory>
+							<PropertyValueFactory property="loginURL" />
+						</cellValueFactory>
+			      </TableColumn>
+				
+			      <TableColumn text="Login" prefWidth="100">
+			      		<cellValueFactory>
+							<PropertyValueFactory property="login" />
+						</cellValueFactory>
+			      </TableColumn>
 	
-    <TableView fx:id="tableViewTasks" 
-    		GridPane.columnIndex="0" GridPane.rowIndex="2"
-    		GridPane.columnSpan="3"
-			GridPane.hgrow="ALWAYS"
-			GridPane.vgrow="ALWAYS"
-    		>
-		<columns>
-
-		      <TableColumn text="Active" prefWidth="100">
-		      		<cellValueFactory>
-						<PropertyValueFactory property="active" />
-					</cellValueFactory>
-	               <cellFactory>
-	                    <CheckBoxCellFactory/>
-	                </cellFactory>	               
-		      </TableColumn>
-		      
-		      <TableColumn text="Test mode" prefWidth="100">
-		      		<cellValueFactory>
-						<PropertyValueFactory property="testMode" />
-					</cellValueFactory>
-	               <cellFactory>
-	                    <CheckBoxCellFactory/>
-	                </cellFactory>	               
-		      </TableColumn>
-		      
-		      <TableColumn text="Start URI" prefWidth="200">
-					<cellValueFactory>
-						<PropertyValueFactory property="loginURL" />
-					</cellValueFactory>
-		      </TableColumn>
-			
-		      <TableColumn text="Login" prefWidth="100">
-		      		<cellValueFactory>
-						<PropertyValueFactory property="login" />
-					</cellValueFactory>
-		      </TableColumn>
-
-		      <TableColumn text="Keywords" prefWidth="160">
-		      		<cellValueFactory>
-						<PropertyValueFactory property="keywords" />
-					</cellValueFactory>
-		      </TableColumn>
-		      
-		      <TableColumn text="Progress" prefWidth="90">
-		      		<cellValueFactory>
-						<PropertyValueFactory property="progress" />
-					</cellValueFactory>
-		      </TableColumn>
-		</columns>
-		 
-		<items>
-		    <FXCollections fx:factory="observableArrayList">
-		    	<!--
-				<<Task active=true
-						testMode=true
-						loginURL="test_login_url"
-						login="test_login"
-						keywords="electrical engineer"
-						progress="0%"
-						/>
-						-->
-		       <Task loginURL="test_login_false" login="adsf@asdf.sd" testMode="false" active="true" keywords="electric engineer" progress="10%"/>
-		       <Task loginURL="test_login_true" login="bbb@asdf.sd" testMode="true" active="false" keywords="software engineer" progress="20%"/>
-		       <Task loginURL="test_login_true" login="bbb@asdf.sd" testMode="true" active="false" keywords="software engineer" progress="20%"/>
-		       <Task loginURL="test_login_true" login="bbb@asdf.sd" testMode="true" active="false" keywords="software engineer" progress="20%"/>
-		       <Task loginURL="test_login_true" login="bbb@asdf.sd" testMode="true" active="false" keywords="software engineer" progress="20%"/>
-
-		    </FXCollections>
-		</items>		 
-		         			
-	</TableView>
-
-</children>
-
-			
-			
+			      <TableColumn text="Keywords" prefWidth="160">
+			      		<cellValueFactory>
+							<PropertyValueFactory property="keywords" />
+						</cellValueFactory>
+			      </TableColumn>
+			      
+			      <TableColumn text="Progress" prefWidth="90">
+			      		<cellValueFactory>
+							<PropertyValueFactory property="progress" />
+						</cellValueFactory>
+			      </TableColumn>
+			</columns>
+			 
+			<items>
+			    <FXCollections fx:factory="observableArrayList">
+			    	<!--
+					<<Task active=true
+							testMode=true
+							loginURL="test_login_url"
+							login="test_login"
+							keywords="electrical engineer"
+							progress="0%"
+							/>
+							-->
+			       <Task loginURL="test_login_false" login="adsf@asdf.sd" testMode="false" active="true" keywords="electric engineer" progress="10%"/>
+			       <Task loginURL="test_login_true" login="bbb@asdf.sd" testMode="true" active="false" keywords="software engineer" progress="20%"/>
+			       <Task loginURL="test_login_true" login="bbb@asdf.sd" testMode="true" active="false" keywords="software engineer" progress="20%"/>
+			       <Task loginURL="test_login_true" login="bbb@asdf.sd" testMode="true" active="false" keywords="software engineer" progress="20%"/>
+			       <Task loginURL="test_login_true" login="bbb@asdf.sd" testMode="true" active="false" keywords="software engineer" progress="20%"/>
 	
-
+			    </FXCollections>
+			</items>		 
+		</TableView>
+	</children>
 
 	<stylesheets>
 	    <URL value="@Main.css" />

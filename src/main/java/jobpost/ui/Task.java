@@ -26,32 +26,53 @@ public class Task {
 	private SimpleStringProperty questionsXml;
 	// progress indicator data
 	private SimpleStringProperty progress;
+
+	public Task(){
+		setActive(false);
+		setTestMode(false);
+		setLoginURL("http://");
+		setLogin("");
+		setPassword("");
+		setKeywords("");
+		setQuestionsXml("");
+		setProgress("");
+	}
 	
     public BooleanProperty testModeProperty() {
         return testMode;
     }
 	public final Boolean getTestMode() {
-		return testMode.get();
+		if (testMode!=null){
+			return testMode.get();
+		}else{
+			return null;
+		}		
 	}
 	public final void setTestMode(Boolean testMode) {
 		this.testMode = new SimpleBooleanProperty(testMode);
 	}
-	
     public BooleanProperty activeProperty() {
         return active;
     }
 	public final Boolean getActive() {
-		return active.get();
+		if (active!=null){
+			return active.get();
+		}else{
+			return null;
+		}		
 	}
 	public final void setActive(Boolean active) {
-		this.active = new  SimpleBooleanProperty(active);
+		this.active = new SimpleBooleanProperty(active);
 	}
-
     public SimpleStringProperty loginURLProperty() {
         return loginURL;
     }
 	public final String getLoginURL() {
-		return loginURL.get();
+		if (loginURL!=null){
+			return loginURL.get();
+		}else{
+			return null;
+		}
 	}
 	public final void setLoginURL(String loginURL) {
 		this.loginURL = new SimpleStringProperty(loginURL);
@@ -60,7 +81,11 @@ public class Task {
         return login;
     }
 	public final String getLogin() {
-		return login.get();
+		if (login!=null){
+			return login.get();
+		}else{
+			return null;
+		}
 	}
 	public final void setLogin(String login) {
 		this.login = new SimpleStringProperty(login);
@@ -69,7 +94,11 @@ public class Task {
         return password;
     }
 	public final String getPassword() {
-		return password.get();
+		if (password!=null){
+			return password.get();
+		}else{
+			return null;
+		}		
 	}
 	public final void setPassword(String password) {
 		this.password = new SimpleStringProperty(password);
@@ -78,7 +107,11 @@ public class Task {
         return keywords;
     }
 	public final String getKeywords() {
-		return keywords.get();
+		if (keywords!=null){
+			return keywords.get();
+		}else{
+			return null;
+		}		
 	}
 	public final void setKeywords(String keywords) {
 		this.keywords = new SimpleStringProperty(keywords);
@@ -87,7 +120,11 @@ public class Task {
         return questionsXml;
     }
 	public final String getQuestionsXml() {
-		return questionsXml.get();
+		if (questionsXml!=null){
+			return questionsXml.get();
+		}else{
+			return null;
+		}		
 	}
 	public final void setQuestionsXml(String questionsXml) {
 		this.questionsXml = new SimpleStringProperty(questionsXml);
@@ -96,7 +133,11 @@ public class Task {
         return progress;
     }
 	public final String getProgress() {
-		return progress.get();
+		if (progress!=null){
+			return progress.get();
+		}else{
+			return null;
+		}		
 	}
 	public final void setProgress(String progress) {
 		this.progress = new SimpleStringProperty(progress);
