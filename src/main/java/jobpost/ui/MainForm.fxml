@@ -16,7 +16,7 @@
 <?import jobpost.ui.Task?>
 <?import jobpost.ui.CheckBoxCellFactory?>
 
-<GridPane  id="AnchorPane" 
+<GridPane fx:id="anchorPane" 
 		prefWidth="800" prefHeight="600"
 		xmlns:fx="http://javafx.com/fxml/1" 
 		fx:controller="jobpost.ui.MainController"
@@ -34,8 +34,12 @@
 	-->		
 	
 	<children>
-	
-		<Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" fx:id="X1" />
+		<!-- This label is not visible. Used to pass message to main JavaFX thread -->
+		<Label fx:id="messageLabel"
+				minHeight="16" minWidth="69" 
+				maxHeight="16" maxWidth="69"
+				text=""
+				visible = "false"/>
 		
 		<Text id="head-text"
 				text="Job post" 
@@ -44,31 +48,25 @@
 		
 		<Text id="task-list"
 				text="Tasks list" 
-				GridPane.rowIndex="1" GridPane.columnIndex="0"
-				layoutX="126" layoutY="90"/>
+				GridPane.rowIndex="1" GridPane.columnIndex="0"/>
 				
 	    <Button 
 	    		GridPane.rowIndex="1" GridPane.columnIndex="1"
-				layoutX="126" layoutY="90" 
 				text="Edit task" onAction="#handleEditTask" fx:id="button" />				
 	
 		<Button 
 				GridPane.rowIndex="1" GridPane.columnIndex="2"
-				layoutX="126" layoutY="90" 
 				text="Add task" onAction="#handleAddTask" fx:id="button" />
 	
 	    <Button 
 	    		GridPane.rowIndex="1" GridPane.columnIndex="3"
-				layoutX="126" layoutY="90" 
 				text="Delete task" onAction="#handleDeleteTask" fx:id="button" />
 	    <Button 
 	    		GridPane.rowIndex="1" GridPane.columnIndex="4"
-				layoutX="126" layoutY="90" 
 				text="Run active" onAction="#handleRunActive" fx:id="button" />
 
 	    <Button 
 	    		GridPane.rowIndex="1" GridPane.columnIndex="5"
-				layoutX="126" layoutY="90" 
 				text="Stop" onAction="#handleStop" fx:id="button" />
 						
 	    <TableView fx:id="tableViewTasks" 
@@ -132,16 +130,23 @@
 							keywords="electrical engineer"
 							progress="0%"
 							/>
-							-->
+							
 			       <Task loginURL="test_login_false" login="adsf@asdf.sd" testMode="false" active="true" keywords="electric engineer" progress="10%"/>
 			       <Task loginURL="test_login_true" login="bbb@asdf.sd" testMode="true" active="false" keywords="software engineer" progress="20%"/>
 			       <Task loginURL="test_login_true" login="bbb@asdf.sd" testMode="true" active="false" keywords="software engineer" progress="20%"/>
 			       <Task loginURL="test_login_true" login="bbb@asdf.sd" testMode="true" active="false" keywords="software engineer" progress="20%"/>
 			       <Task loginURL="test_login_true" login="bbb@asdf.sd" testMode="true" active="false" keywords="software engineer" progress="20%"/>
-	
+					-->	
 			    </FXCollections>
 			</items>		 
 		</TableView>
+		
+	    <TextArea fx:id="logText"
+	    		prefHeight = "400"
+	    		GridPane.rowIndex="3" GridPane.columnIndex="0"
+	    		GridPane.columnSpan="6"
+				text="Ready..."/>		
+		
 	</children>
 
 	<stylesheets>

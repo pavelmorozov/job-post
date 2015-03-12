@@ -9,16 +9,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jobpost.JobsQueue;
+import jobpost.ui.MainController;
 import jobpost.ui.Task;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.WebDriverException;
 
 /**
  * Engine class used to operate with browser.
@@ -56,6 +58,8 @@ public class Engine  extends javafx.concurrent.Task{
 	private Set<VacancyInstance> appliedVacancies = new HashSet<VacancyInstance>();
 	private Map<String, Question> questions = null;
 	private boolean stopProcess;
+	private MainController mainController;
+	private JobsQueue jobsQueue;
 	
 	@Override
 	protected Object call() throws Exception {
@@ -73,6 +77,10 @@ public class Engine  extends javafx.concurrent.Task{
 		stopProcess = false;
 	}
 	
+	public void setMainController(MainController mainController){
+		this.mainController = mainController; 
+	}	
+	
 	public void setStopProcess(boolean stopProcess){
 		this.stopProcess = stopProcess;
 	}
@@ -85,10 +93,10 @@ public class Engine  extends javafx.concurrent.Task{
 
 	private boolean login() {
 		try {
-			System.out.println(currentTime() + " Connect to: " + loginURL);
+			jobsQueue.setMessage(currentTime() + " Connect to: " + loginURL);
 			webDriver.navigate().to(loginURL);
 
-			System.out.println(currentTime() + " Start login with user: "
+			jobsQueue.setMessage(currentTime() + " Start login with user: "
 					+ login);
 			// login
 			webDriver
@@ -118,7 +126,7 @@ public class Engine  extends javafx.concurrent.Task{
 
 	private boolean search() {
 		try{
-			System.out.println(currentTime() + " Start search with: " + keyword);
+			jobsQueue.setMessage(currentTime() + " Start search with: " + keyword);
 			// keyword
 			webDriver.findElement(By.id("topNavInterface.jobSearchTabAction"))
 					.click();
@@ -154,7 +162,7 @@ public class Engine  extends javafx.concurrent.Task{
 
 	private boolean processJobsPage() {
 		try{
-			System.out.println(currentTime() + " Start jobs process");
+			jobsQueue.setMessage(currentTime() + " Start jobs process");
 
 			// list jobs
 			webDriverWait.until(ExpectedConditions.invisibilityOfElementLocated(By
@@ -164,7 +172,7 @@ public class Engine  extends javafx.concurrent.Task{
 					.xpath("//div[@id='jobsTableContainer']/descendant::"
 							+ "tr[not(contains(@class,'headers'))]"));
 
-			System.out.println("vacancies find: " + vacanciesNodes.size());
+			jobsQueue.setMessage("vacancies find: " + vacanciesNodes.size());
 
 			for (WebElement vacancyNode : vacanciesNodes) {
 
@@ -208,12 +216,12 @@ public class Engine  extends javafx.concurrent.Task{
 		try{
 			
 			if (vacancy.getApplyButtonText().equals("View/Edit Submission")){
-				System.out.println("This vacancy: "+ vacancy.getJobId()+" "+ 
+				jobsQueue.setMessage("This vacancy: "+ vacancy.getJobId()+" "+ 
 						vacancy.getJobTitle()  +", applied already. Skip.");
 				return false;
 			}
 			
-			System.out.println(currentTime()+" Apply to: " + vacancy.getJobId() + " "
+			jobsQueue.setMessage(currentTime()+" Apply to: " + vacancy.getJobId() + " "
 					+ vacancy.getJobTitle() + " " + vacancy.getApplyButtonUrl());
 
 			webDriver.navigate().to(vacancy.getApplyButtonUrl());
@@ -222,7 +230,7 @@ public class Engine  extends javafx.concurrent.Task{
 			.until(ExpectedConditions.visibilityOfElementLocated(By
 			.xpath("//span[@class='infojob']")));
 			
-			System.out.println("Process \"My info\"");
+			jobsQueue.setMessage("Process \"My info\"");
 			try {
 
 				//WebElement spanMyInfo = webDriver.findElement(By.xpath("//div[@class='datatrain-focus']"
@@ -243,13 +251,13 @@ public class Engine  extends javafx.concurrent.Task{
 						.click();
 				
 			} catch (Exception e) {
-				System.out.println("not passed \"My info\" page");
+				jobsQueue.setMessage("not passed \"My info\" page");
 				//e.printStackTrace();
 				return false;
 			}
 
 			
-			System.out.println("Process \"Prescreening\"");
+			jobsQueue.setMessage("Process \"Prescreening\"");
 			try {
 				webDriverWait
 						.until(ExpectedConditions.visibilityOfElementLocated(By
@@ -314,7 +322,7 @@ public class Engine  extends javafx.concurrent.Task{
 							}
 						}
 					}else{
-						System.out.println("Question not found: "+questionSpanWE.getText());
+						jobsQueue.setMessage("Question not found: "+questionSpanWE.getText());
 					}
 				}
 
@@ -323,12 +331,12 @@ public class Engine  extends javafx.concurrent.Task{
 								By.xpath("//input[contains(@id,'et-ef-content-ftf-saveContinueCmdBottom')]"))
 						.click();
 			} catch (Exception e) {
-				System.out.println("not passed \"Prescreening\" page");
+				jobsQueue.setMessage("not passed \"Prescreening\" page");
 				//e.printStackTrace();
 				return false;
 			}
 
-			System.out.println("Process \"Attachments\"");
+			jobsQueue.setMessage("Process \"Attachments\"");
 			try {
 				webDriverWait
 						.until(ExpectedConditions.visibilityOfElementLocated(By
@@ -338,12 +346,12 @@ public class Engine  extends javafx.concurrent.Task{
 								By.xpath("//input[contains(@id,'editTemplateMultipart-editForm-content-ftf-saveContinueCmdBottom')]"))
 						.click();
 			} catch (Exception e) {
-				System.out.println("not passed \"Attachments\" page");
+				jobsQueue.setMessage("not passed \"Attachments\" page");
 				//e.printStackTrace();
 				return false;
 			}
 
-			System.out.println("Process \"Summary\"");
+			jobsQueue.setMessage("Process \"Summary\"");
 			try {
 				webDriverWait
 						.until(ExpectedConditions.visibilityOfElementLocated(By
@@ -352,7 +360,7 @@ public class Engine  extends javafx.concurrent.Task{
 				// Apply when not in test mode
 				if (!testMode) {
 					// press submit button
-					System.out.println("While not in test mode, press \"Submit\" button");
+					jobsQueue.setMessage("While not in test mode, press \"Submit\" button");
 					webDriver
 							.findElement(
 									By.xpath("//input[contains(@id,'et-ef-content-ftf-submitCmdBottom')]"))
@@ -362,15 +370,15 @@ public class Engine  extends javafx.concurrent.Task{
 							.until(ExpectedConditions.visibilityOfElementLocated(By
 									.xpath("//h1[@class='no-change-header']//span[contains(text(),'Thank you')]")));
 				}else{
-					System.out.println("While in test mode, will not press \"Submit\" button");
+					jobsQueue.setMessage("While in test mode, will not press \"Submit\" button");
 				}
 			} catch (Exception e) {
-				System.out.println("not passed \"Summary\" page");
+				jobsQueue.setMessage("not passed \"Summary\" page");
 				//e.printStackTrace();
 				return false;
 			}
 
-			System.out.println(currentTime()+" Application ended sucssesfully!");
+			jobsQueue.setMessage(currentTime()+" Application ended sucssesfully!");
 			return true;			
 		}catch (WebDriverException e){
 			//e.printStackTrace();
@@ -378,8 +386,12 @@ public class Engine  extends javafx.concurrent.Task{
 		}
 	}
 
+	public void setJobsQueue(JobsQueue jobsQueue){
+		this.jobsQueue = jobsQueue;
+	}	
+	
 	public void postJobs() {
-		System.out.println(currentTime() + " Create web driver");
+		jobsQueue.setMessage(currentTime() + " Create web driver");
 
 		webDriver = new FirefoxDriver();
 		webDriver.manage().window().maximize();

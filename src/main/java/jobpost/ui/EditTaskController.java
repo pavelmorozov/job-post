@@ -64,8 +64,6 @@ public class EditTaskController implements Initializable{
     private void handleSaveTask(ActionEvent event){
         System.out.println("SaveTask!");
         
-        //Task jobPostTask = new Task();
-        
         jobPostTask.setActive(checkBoxActive.isSelected());
         jobPostTask.setTestMode(checkBoxTestMode.isSelected());
         jobPostTask.setLoginURL(loginURL.getText());
@@ -80,14 +78,11 @@ public class EditTaskController implements Initializable{
         if (mode.equals("add")){
         	tasksList.add(jobPostTask);
         }else if(mode.equals("edit")){
-        	//tasksList.setAll(jobPostTask);
         	mainFormController.refreshTable();
         }  
         
         Button b = (Button)event.getSource();
         Stage stage = (Stage) b.getScene().getWindow();
-        //Stage stage = (Stage) buttonCancel.getScene().getWindow();
-        
         SettingsFile.save(".//tasklist.ser", tasksList);
         
         stage.close();        

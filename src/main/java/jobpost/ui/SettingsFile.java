@@ -11,7 +11,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javafx.collections.ObservableList;
-
+/**
+ * Saves the current application state (e.g tasks settings) 
+ */
 public class SettingsFile {
 
 	private static class TaskSerializible implements Serializable{

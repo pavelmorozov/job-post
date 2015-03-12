@@ -4,27 +4,36 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.ResourceBundle;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-//import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import jobpost.Jobpost;
 import jobpost.JobsQueue;
 
 import org.controlsfx.dialog.Dialogs;
-
+/**
+ * Main form controller 
+ */
 public class MainController implements Initializable{
 	
 	 @FXML private TableView<Task> tableViewTasks;
@@ -36,46 +45,25 @@ public class MainController implements Initializable{
 	 @FXML private TextField password;
 	 @FXML private TextField keyword;
 	 @FXML private TextField questionsXML;
+	 @FXML private TextArea logText;
+	 @FXML private GridPane anchorPane;
+	 /**
+	  * This label listener fires when form should append new messages
+	  */
+	 @FXML private Label messageLabel;
+	 /**
+	  * Tasks from main form are processed in separate thread
+	  */
 	 JobsQueue jobsQueue;
+	 /**
+	  * Messages from other threads passed as queue. 
+	  */
+	 Queue<String> messageQueue;
 	 
-    //@FXML
-    //private Label label;
-    
-    // Reference to the main application.
+    /**
+     * Reference to the main application.
+     */
     private Jobpost mainApp;    
-    
-    @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-    }
-
-//    
-//    @FXML
-//    private void handleSaveTask(ActionEvent event){
-//        System.out.println("SaveTask!");
-//        
-//        Task jobPostTask = new Task();
-//        
-//        jobPostTask.setActive(checkBoxActive.isSelected());
-//        jobPostTask.setTestMode(checkBoxTestMode.isSelected());
-//        jobPostTask.setLoginURL(loginURL.getText());
-//        jobPostTask.setLoginURL(login.getText());
-//        jobPostTask.setLoginURL(password.getText());
-//        jobPostTask.setLoginURL(keyword.getText());
-//        jobPostTask.setLoginURL(questionsXML.getText());
-//        
-//        ObservableList<Task> tasksList = tableViewTasks.getItems();
-//        
-//        Stage stage = (Stage) buttonCancel.getScene().getWindow();
-//        stage.close();        
-//    }
-//    
-//    @FXML
-//    private void handleCancelSaveTask(ActionEvent event){
-//        System.out.println("CancelSaveTask!");
-//        Stage stage = (Stage) buttonCancel.getScene().getWindow();
-//        stage.close();        
-//    }
     
     public void showEditDialog(Task task, String mode) {
         //open form
@@ -98,6 +86,9 @@ public class MainController implements Initializable{
         }    	
     }
     
+    /**
+     * Workaround to refresh table, when new task appears  
+     */
     public void refreshTable(){
 	   	 tableViewTasks.getColumns().get(0).setVisible(false);
 	   	 tableViewTasks.getColumns().get(0).setVisible(true);
@@ -107,8 +98,8 @@ public class MainController implements Initializable{
     private void handleEditTask(ActionEvent event) {
     	Task taskSelected = tableViewTasks.getSelectionModel().getSelectedItem();
     	 if (taskSelected != null){
+    		 sendToLog("Edit "+tableViewTasks.getSelectionModel().getSelectedItem().getLoginURL());
     		 showEditDialog(taskSelected, "edit");
-    		 System.out.println("Edit "+tableViewTasks.getSelectionModel().getSelectedItem().getLoginURL());
     	 }else{
     		 noSelectionDialog();
     	 } 
@@ -124,29 +115,62 @@ public class MainController implements Initializable{
     }
     
     public void runJobsQueue(){
+    	logText.clear();
+    	sendToLog("Attempt to run JobsQueue");
+    	Stage stage = (Stage) anchorPane.getScene().getWindow();
+    	
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+            	jobsQueue.setStopThread(true);
+            }
+        });      	
+    	
+    	messageLabel.textProperty().addListener(new ChangeListener<String>() {
+    	    @Override
+    	    public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
+    	        //System.out.println("text changed !");
+    	        //System.out.println(messageLabel.getText());
+    			//logText.appendText("\n"+messageLabel.getText());
+    			while (!messageQueue.isEmpty()){
+    				String s = messageQueue.poll();
+    				sendToLog(s);
+    			}
+    	    }
+    	});
+    	
     	jobsQueue = new JobsQueue();
     	
     	List<Task> taskQueue = new LinkedList(tableViewTasks.getItems());
-    	
     	jobsQueue.setTasksList(taskQueue);
+    	messageQueue = new LinkedList<String>();
+    	jobsQueue.setMessageQueue(messageQueue);
+    	jobsQueue.setMainController(this);
     	Thread jobsQueueThread = new Thread(jobsQueue);
+    	messageLabel.textProperty().bind(jobsQueue.messageProperty());    	
     	jobsQueueThread.start();
     } 
     
     @FXML
     private void handleRunActive(ActionEvent event) {
-    	System.out.println("Run!");
+    	sendToLog("Run!");
     	runJobsQueue();
     }    
         
     @FXML
     private void handleStop(ActionEvent event) {
-    	System.out.println("Stop!");
-    	jobsQueue.setStopThread(true);
-    }       
+    	sendToLog("Stop!");
+    	if (jobsQueue!=null) jobsQueue.setStopThread(true);
+    }
+    
+    public void sendToLog(String message){
+    	System.out.println(message);
+    	logText.appendText("\n"+message);
+    	logText.setScrollLeft(0);
+    }
+    
     @FXML
     private void handleAddTask(ActionEvent event) {
-        System.out.println("Add!");
+    	sendToLog("Add!");
         Task task = new Task();
         showEditDialog(task, "add");
     }    
@@ -154,7 +178,7 @@ public class MainController implements Initializable{
     @FXML
     private void handleDeleteTask(ActionEvent event) {
         int selectedRow = tableViewTasks.getSelectionModel().getSelectedIndex();
-        System.out.println("Delete task!: " + selectedRow);
+        sendToLog("Delete task!: " + selectedRow);
         ObservableList<Task> tasksList = tableViewTasks.getItems();
         if (selectedRow >= 0 ) {
         	tasksList.remove(selectedRow);

@@ -1,38 +1,25 @@
 package jobpost;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
+import java.util.Queue;
 
-import javafx.collections.ObservableList;
 import jobpost.intel.Engine;
+import jobpost.ui.MainController;
 import jobpost.ui.Task;
 
-public class JobsQueue extends Thread{
+public class JobsQueue extends javafx.concurrent.Task{
 	boolean stopThread;
 	List<Task> tasksList;
 	Thread engineThread;
 	Engine engine;
+	MainController mainController;
+	Queue<String> messageQueue;
 	
 	public JobsQueue(){
 		stopThread = false;
 		tasksList = null;
-	}
-	
-	public void run(){
-		if (tasksList!=null){
-	        for (Task jobPostTask: tasksList){
-	        	if (stopThread){
-	        		return;
-	        	}
-	        	engine = new Engine(jobPostTask);
-	        	engineThread = new Thread(engine);
-	        	engineThread.start();
-	        	try {
-					engineThread.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-	        }			
-		}
 	}
 
 	public boolean isStopThread() {
@@ -50,5 +37,54 @@ public class JobsQueue extends Thread{
 
 	public void setTasksList(List<Task> tasksList) {
 		this.tasksList = tasksList;
+	}
+
+	public MainController getMainController() {
+		return mainController;
+	}
+
+	public void setMainController(MainController mainController) {
+		this.mainController = mainController;
+	}
+
+	public void setMessageQueue(Queue<String> messageQueue){
+		this.messageQueue = messageQueue;
+	}
+	
+	public void setMessage(String message){
+		messageQueue.add(message);
+		updateMessage(message);
+	}
+	
+	@Override
+	protected Object call() throws Exception {
+		if (tasksList!=null){
+	        for (Task jobPostTask: tasksList){
+	        	
+	        	setMessage("========= New task ! =========");
+	        	setMessage(jobPostTask.getTestMode().toString());
+	        	setMessage(jobPostTask.getLoginURL());
+	        	setMessage(jobPostTask.getLogin());
+	        	setMessage(jobPostTask.getKeywords());
+	        	setMessage("==============================");
+
+	        	if (stopThread){
+	        		return null;
+	        	}
+	        	engine = new Engine(jobPostTask);
+	        	engine.setMainController(mainController);
+	        	engine.setJobsQueue(this);
+	        	engineThread = new Thread(engine);
+	        	engineThread.start();
+	        	try {
+					engineThread.join();
+				} catch (InterruptedException e) {
+					StringWriter errors = new StringWriter();
+					e.printStackTrace(new PrintWriter(errors));
+					setMessage(errors.toString());
+				}
+	        }			
+		}
+		return null;
 	}
 }
